@@ -1,0 +1,9 @@
+<h2>물건 올리기</h2>
+<form method="POST" enctype="multipart/form-data">
+  이름: <input type="text" name="name" required><br>
+  가격: <input type="number" name="price" required><br>
+  설명: <br><textarea name="description" rows="5" cols="40" required></textarea><br>
+  사진: <input type="file" name="image" accept="image/*" required><br>
+  <input type="submit" value="등록하기">
+</form>
+<a href="{{ url_for('home') }}">뒤로가기</a>

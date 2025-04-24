@@ -1,0 +1,13 @@
+<h2>상품 목록</h2>
+<a href="{{ url_for('upload') }}">[물건 올리기]</a>
+<hr>
+{% for item in items %}
+  <a href="{{ url_for('item_detail', item_id=item.id) }}">
+    <div style="border:1px solid #ccc; margin-bottom:10px; padding:10px;">
+      <h3>{{ item.name }}</h3>
+      <img src="{{ url_for('static', filename='uploads/' + item.image) }}" width="200"><br>
+      <strong>{{ item.price }}원</strong>
+    </div>
+  </a>
+{% endfor %}
+<a href="{{ url_for('logout') }}">로그아웃</a>

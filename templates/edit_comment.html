@@ -1,0 +1,6 @@
+<h2>댓글 수정</h2>
+<form method="POST">
+  <textarea name="text" rows="3" cols="50" required>{{ comment.text }}</textarea><br>
+  <input type="submit" value="수정 완료">
+</form>
+<a href="{{ url_for('item_detail', item_id=comment.item_id) }}">취소</a>

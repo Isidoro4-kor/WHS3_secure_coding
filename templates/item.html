@@ -1,0 +1,72 @@
+<h2>{{ item.name }}</h2>
+<p><strong>가격:</strong> {{ item.price }}원</p>
+<p><strong>업로더:</strong> {{ uploader.email }}</p>
+<img src="{{ url_for('static', filename='uploads/' + item.image) }}" width="300"><br><br>
+<p><strong>설명:</strong><br>{{ item.description }}</p>
+
+<hr>
+<h3>댓글</h3>
+{% for comment in comments %}
+  <div style="margin-left: {{ 20 * loop.depth0 }}px; border: 1px solid #ddd; padding: 8px; margin-top: 8px; background-color: {% if comment.is_deleted %}#f0f0f0{% else %}#ffffff{% endif %};">
+    <p>
+      <strong>
+        {% if comment.user_id == item.user_id %}
+          판매자
+        {% else %}
+          {{ comment.user.email }}
+        {% endif %}
+      </strong>
+      : {% if comment.is_deleted %}<em>삭제된 글 입니다.</em>{% else %}{{ comment.text }}{% endif %}
+    </p>
+
+    {% if not comment.is_deleted and session.get('user_id') == comment.user_id %}
+      <form method="GET" action="{{ url_for('edit_comment', comment_id=comment.id) }}" style="display:inline">
+        <input type="submit" value="수정">
+      </form>
+      <form method="POST" action="{{ url_for('delete_comment', comment_id=comment.id) }}" style="display:inline">
+        <input type="submit" value="삭제">
+      </form>
+    {% endif %}
+
+    {% for child in comment.children %}
+      <div style="margin-left: 20px; background-color: {% if child.is_deleted %}#f0f0f0{% else %}#ffffff{% endif %}; padding: 5px; border: 1px solid #ccc; margin-top: 5px;">
+        <p>
+          <strong>
+            {% if child.user_id == item.user_id %}
+              판매자
+            {% else %}
+              {{ child.user.email }}
+            {% endif %}
+          </strong>
+          : {% if child.is_deleted %}<em>삭제된 글 입니다.</em>{% else %}{{ child.text }}{% endif %}
+        </p>
+
+        {% if not child.is_deleted and session.get('user_id') == child.user_id %}
+          <form method="GET" action="{{ url_for('edit_comment', comment_id=child.id) }}" style="display:inline">
+            <input type="submit" value="수정">
+          </form>
+          <form method="POST" action="{{ url_for('delete_comment', comment_id=child.id) }}" style="display:inline">
+            <input type="submit" value="삭제">
+          </form>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <form method="POST">
+      <input type="hidden" name="parent_id" value="{{ comment.id }}">
+      <textarea name="comment" rows="1" cols="50" placeholder="답글 입력..." required></textarea>
+      <input type="submit" value="답글 달기">
+    </form>
+  </div>
+{% else %}
+  <p>아직 댓글이 없습니다.</p>
+{% endfor %}
+
+{% if session.get('user_id') %}
+  <form method="POST">
+    <textarea name="comment" rows="2" cols="50" placeholder="댓글 입력..." required></textarea><br>
+    <input type="submit" value="댓글 달기">
+  </form>
+{% else %}
+  <p><a href="{{ url_for('main') }}">로그인</a> 후 댓글을 작성할 수 있습니다.</p>
+{% endif %}
